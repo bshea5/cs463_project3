@@ -42,4 +42,14 @@ public class Dancer
 	{
 		return this.mBuff.get();
 	}
+
+	public void put(int[] message)
+	{
+		return this.mBuff.put(message[0], message[1]);
+	}
+
+	public boolean getIsFinished()
+	{
+		return isFinished;
+	}
 }
