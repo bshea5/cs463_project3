@@ -7,6 +7,7 @@ public class Dancer
 {
 	protected boolean isFinished;
 	protected int mNumber;
+	//protected int currentDance;
 	protected int[] mDanceCard;
 	protected Buffer mBuff; 		// each dancer has their own buffer for msgs
 
@@ -25,7 +26,26 @@ public class Dancer
 
 	protected void markCard(int dance_number, int dancer_num)
 	{
+		// mark card
 		mDanceCard[dance_number] = dancer_num;
+
+		// check if card is complete
+		for(int i = 0; i < mDanceCard.length; i++)
+		{
+			if (mDanceCard[i] == 0)
+				return;
+		}
+		isFinished = true;
 	}
+
+	public void put(int leaderID, int dance_number)
+	{
+		this.mBuff.put(leaderID, dance_number);
+	}
+
+	// private int[] get()
+	// {
+	// 	return this.mBuff.get();
+	// }
 
 }
