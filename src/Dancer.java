@@ -13,9 +13,9 @@ public class Dancer
 	public Dancer(int dancer_number)
 	{
 		this.isFinished = false;
-		this.mNumber 	= dancer_number;
+		this.mNumber    = dancer_number;
 		this.mDanceCard = new int[] {0,0,0,0,0,0,0,0};	// 8 dances
-		this.mBuff 		= new Buffer();
+		this.mBuff      = new Buffer();
 	}
 
 	public boolean isDoneDancing() 
