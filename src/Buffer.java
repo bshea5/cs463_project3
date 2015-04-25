@@ -20,7 +20,7 @@ class Buffer
 		System.out.println("Producer: put..." + msg);
 	}
 
-	private synchronized int[] get () throws InterruptedException {
+	public synchronized int[] get () throws InterruptedException {
 		while (empty == true)  {	//wait till something appears in the buffer
 			try { wait(); }
 			catch (InterruptedException e) {throw e;}
