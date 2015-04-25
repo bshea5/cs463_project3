@@ -20,9 +20,9 @@ public class Dancer
 		return this.isFinished; 
 	}
 
-	protected void markCard(int dance_number)
+	protected void markCard(int dance_number, int dancer_num)
 	{
-		mDanceCard[dance_number]++;
+		mDanceCard[dance_number] = dancer_num;
 	}
 
 }
