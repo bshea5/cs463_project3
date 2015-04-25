@@ -38,4 +38,8 @@ public class Dancer
 		isFinished = true;
 	}
 
+	public int[] get()
+	{
+		return this.mBuff.get();
+	}
 }
