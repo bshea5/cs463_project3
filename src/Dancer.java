@@ -14,9 +14,9 @@ public class Dancer
 	public Dancer(int dancer_number)
 	{
 		this.isFinished = false;
-		this.mNumber 	= dancer_number;
+		this.mNumber    = dancer_number;
 		this.mDanceCard = new int[] {0,0,0,0,0,0,0,0};	// 8 dances
-		this.mBuff 		= new Buffer();
+		this.mBuff      = new Buffer();
 	}
 
 	public boolean isDoneDancing() 
@@ -37,15 +37,5 @@ public class Dancer
 		}
 		isFinished = true;
 	}
-
-	public void put(int leaderID, int dance_number)
-	{
-		this.mBuff.put(leaderID, dance_number);
-	}
-
-	// private int[] get()
-	// {
-	// 	return this.mBuff.get();
-	// }
 
 }

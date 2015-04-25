@@ -1,3 +1,4 @@
+
 public class Follower extends Dancer implements Runnable
 {
 
@@ -11,3 +12,4 @@ public class Follower extends Dancer implements Runnable
 
 	}
 }
+
