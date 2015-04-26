@@ -20,6 +20,7 @@ public class Leader extends Dancer implements Runnable
 
 	public void run()
 	{
+		System.out.println("Leader: " + this.mNumber + " is starting.");
 		// keep asking dancers to dance current song
 		//for(int dance = 0; dance < mDanceCard.length; dance++)
 		while(!isFinished && !dancersToAsk.isEmpty())

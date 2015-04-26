@@ -10,6 +10,7 @@ public class Follower extends Dancer implements Runnable
 
 	public void run()
 	{
+		System.out.println("Follower: " + this.mNumber + " is starting.");
 		while (!this.isFinished)
 		{
 			Message request = mBuff.get();

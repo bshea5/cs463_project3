@@ -33,7 +33,7 @@ class Buffer
 		// clear old msg
 		msg.dance_number = 0;
 
-		System.out.println("Consumer: got..." + contents.dancer + " & " + contents.dance_number);
+		System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
 		return contents;
 		// maybe, if msg returned is [0,0], that is a no
 	}

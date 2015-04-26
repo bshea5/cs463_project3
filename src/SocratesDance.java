@@ -44,16 +44,17 @@ public class SocratesDance
 		SocratesDance sd = new SocratesDance(n, m);
 		System.out.println(sd.leadersToString());
 		System.out.println(sd.followersToString());
+		sd.startDance();
 	}
 
 	public void startDance()
 	{
 		// start each dancer, followers first
 		for(int i = 0; i < followers.length; i++)
-			followers[i].start();
+			new Thread(followers[i]).start();
 
 		for(int i = 0; i < leaders.length; i++)
-			leaders[i].start();
+			new Thread(leaders[i]).start();
 
 		// wait for leaders to finish
 
