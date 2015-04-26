@@ -26,8 +26,10 @@ public class Leader extends Dancer implements Runnable
 
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a msg
-			int randomNumber = rand.nextInt(dancersToAsk.size()-1); 
-			dancersToAsk.get(randomNumber).put(mNumber, current_dance);
+			int[] msgToSend = new int[] {mNumber, current_dance};
+			int randomNumber = rand.nextInt(dancersToAsk.size()-1);
+			Follower target = dancersToAsk.get(randomNumber);
+			this.put(msgToSend, target);
 
 			// check buffer until we have a response
 			// the getter in buffer runs until it gets a response

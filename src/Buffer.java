@@ -9,10 +9,11 @@ class Buffer
 		empty = true;
 	}
 
-	public synchronized void put (int leaderID, int dance_number) throws InterruptedException { 
+	public synchronized void put (int leaderID, int dance_number) 
+	{ 
 		while (empty == false) {	//wait till the buffer becomes empty
 			try { wait(); }
-			catch (InterruptedException e) {throw e;}
+			catch (InterruptedException e) {}	// throwing e caused problems
 		}
 		msg[0] = leaderID;
 		msg[1] = dance_number;
@@ -20,10 +21,11 @@ class Buffer
 		System.out.println("Producer: put..." + msg);
 	}
 
-	public synchronized int[] get () throws InterruptedException {
+	public synchronized int[] get () 
+	{
 		while (empty == true)  {	//wait till something appears in the buffer
 			try { wait(); }
-			catch (InterruptedException e) {throw e;}
+			catch (InterruptedException e) {}
 		}
 		empty = true;
 

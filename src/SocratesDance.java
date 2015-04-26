@@ -21,6 +21,7 @@ public class SocratesDance
 
 		// initialize each thread(dancer), n leaders and m followers
 
+		// wait for leaders to finish
 
 		// print the results
 		// report, in order, each dancer's card

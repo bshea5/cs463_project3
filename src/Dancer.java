@@ -7,7 +7,6 @@ public class Dancer
 {
 	protected boolean isFinished;
 	protected int mNumber;
-	//protected int currentDance;
 	protected int[] mDanceCard;
 	protected Buffer mBuff; 		// each dancer has their own buffer for msgs
 
@@ -38,14 +37,17 @@ public class Dancer
 		isFinished = true;
 	}
 
+	// get msg from buffer
 	public int[] get()
 	{
-		return this.mBuff.get();
+		return this.mBuff.get(); 
+		// catch (InterruptedException e) {throw e;}
 	}
 
-	public void put(int[] message)
+	// put a msg in the target's buffer
+	public void put(int[] message, Dancer target)
 	{
-		return this.mBuff.put(message[0], message[1]);
+		target.mBuff.put(message[0], message[1]);
 	}
 
 	public boolean getIsFinished()
