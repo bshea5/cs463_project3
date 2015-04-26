@@ -2,44 +2,42 @@ import java.util.ArrayList;
 
 public class Follower extends Dancer implements Runnable
 {
-	ArrayList<Leader> potentialLeaders;
-
-	public Follower(int dancer_number, Leader[] leaders)
+	// circular dependency if followers need leaders in constructor
+	public Follower(int dancer_number)
 	{
 		super(dancer_number);
-		for(int i = 0; i < leaders.length; i++)
-			this.potentialLeaders.add(leaders[i]);
 	}
 
 	public void run()
 	{
 		while (!this.isFinished)
 		{
-			int[] request = mBuff.get();
+			Message request = mBuff.get();
+
+			// how many times has the follower danced with the requester.
+			// might be faster with an array of timesDanced values for each leader known
 			int count = 0;
 			for (int i=0; i<mDanceCard.length; i++)
 			{
-				if (mDanceCard[i] == request[0])
+				if (mDanceCard[i] == request.dancer.getDancerID())
 					count++;
 			}
 
-			Leader leader = this.potentialLeaders.get(request[0]);
+			Leader leader = (Leader)request.dancer;
 			// already did this dance or already danced with leader twice
-			if (mDanceCard[request[1]] != 0 || count > 2)
+			if (mDanceCard[request.dance_number] != 0 || count > 2)
 			{
-				int[] no = {0,0};
-				this.put(no, leader);
+				this.put(request, leader); 	// send back request 
 			}
-			else // say yes!
+			else // say yes! mark card
 			{
-				this.put(request, leader);
-				this.mDanceCard[request[1]] = request[0];
+				this.markCard(request.dance_number, request.dancer.getDancerID());
+				request.dancer = this;
+				this.put(request, leader);	// send back request, but with the follower's number
 			}
 
-			isFinished = true;
-			for (int i=0; i<potentialLeaders.size(); i++)
-				if (!potentialLeaders.get(i).getIsFinished())
-					isFinished = false;
+			// markCard also checks if dancer is finished
+
 		}
 	}
 }

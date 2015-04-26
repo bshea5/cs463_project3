@@ -18,9 +18,9 @@ public class Dancer
 		this.mBuff      = new Buffer();
 	}
 
-	public boolean isDoneDancing() 
-	{ 
-		return this.isFinished; 
+	public int getDancerID()
+	{
+		return this.mNumber;
 	}
 
 	protected void markCard(int dance_number, int dancer_num)
@@ -38,21 +38,28 @@ public class Dancer
 	}
 
 	// get msg from buffer
-	public int[] get()
+	private Message get()
 	{
 		return this.mBuff.get(); 
 		// catch (InterruptedException e) {throw e;}
 	}
 
 	// put a msg in the target's buffer
-	public void put(int[] message, Dancer target)
+	public void put(Message m, Dancer target)
 	{
-		target.mBuff.put(message[0], message[1]);
+		target.mBuff.put(m);
 	}
 
 	public boolean getIsFinished()
 	{
 		return isFinished;
+	}
+
+	public String toString()
+	{
+		String s = "";
+		s += "My dance number is: " + Integer.toString(mNumber);
+		return s;
 	}
 
 }

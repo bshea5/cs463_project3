@@ -10,8 +10,11 @@ public class Leader extends Dancer implements Runnable
 	public Leader(int dancer_number, Follower[] followers)
 	{
 		super(dancer_number);
+		dancersToAsk = new ArrayList<Follower>();
 		for(int i = 0; i < followers.length; i++)
+		{
 			this.dancersToAsk.add(followers[i]);
+		}
 		current_dance = 0;
 	}
 
@@ -26,24 +29,24 @@ public class Leader extends Dancer implements Runnable
 
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a msg
-			int[] msgToSend = new int[] {mNumber, current_dance};
+			Message msgToSend = new Message(this, current_dance);
 			int randomNumber = rand.nextInt(dancersToAsk.size()-1);
 			Follower target = dancersToAsk.get(randomNumber);
 			this.put(msgToSend, target);
 
 			// check buffer until we have a response
 			// the getter in buffer runs until it gets a response
-			int msg[] = this.mBuff.get();
-
-			if (msg[0] != 0 && msg[1] != 0)  // She said yes!
+			Message response = this.mBuff.get();
+			int responseID = response.dancer.getDancerID();
+			if (responseID != this.mNumber)  // She said yes! & got her number
 			{
-				mDanceCard[current_dance] = msg[0];  // assign dancer_number to card
+				this.markCard(current_dance, responseID);
 				if (current_dance == mDanceCard.length-1)
-					isFinished = true; 	// dance with everyone, time to finish
+					isFinished = true; 	// dance all dances, time to finish
 				else 
 					current_dance++; 	// next groove
 			}
-			// else she said no ;;  ask someelse for same dance
+			// else she said no ;;  ask someone else for same dance
 		} 
 	}
 }

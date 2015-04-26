@@ -1,27 +1,25 @@
-class Buffer 
+class Buffer
 {
-	private int[] msg;  // index 0 = dancer, index 1 = dance type
-	private boolean empty;	// if msg is [0,0], than empty
+	private Message msg;  	// Message object to hold msg contents
+	private boolean empty;	
 
 	public Buffer()
 	{
-		msg = new int[] {0,0};
 		empty = true;
 	}
 
-	public synchronized void put (int leaderID, int dance_number) 
+	public synchronized void put(Message m) 
 	{ 
 		while (empty == false) {	//wait till the buffer becomes empty
 			try { wait(); }
 			catch (InterruptedException e) {}	// throwing e caused problems
 		}
-		msg[0] = leaderID;
-		msg[1] = dance_number;
+		this.msg = m;
 		empty = false;
-		System.out.println("Producer: put..." + msg);
+		System.out.println("Producer: put..." + msg.dancer + " & " + msg.dance_number);
 	}
 
-	public synchronized int[] get () 
+	public synchronized Message get() 
 	{
 		while (empty == true)  {	//wait till something appears in the buffer
 			try { wait(); }
@@ -30,13 +28,12 @@ class Buffer
 		empty = true;
 
 		// get information for dance card
-		int[] contents = msg;
+		Message contents = msg;
 
 		// clear old msg
-		msg[0] = 0;
-		msg[1] = 0;
+		msg.dance_number = 0;
 
-		System.out.println("Consumer: got..." + contents);
+		System.out.println("Consumer: got..." + contents.dancer + " & " + contents.dance_number);
 		return contents;
 		// maybe, if msg returned is [0,0], that is a no
 	}
