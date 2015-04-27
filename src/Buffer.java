@@ -10,13 +10,14 @@ class Buffer
 
 	public synchronized void put(Message m) 
 	{ 
-		while (empty == false) {	//wait till the buffer becomes empty
-			try { wait(); }
+		while (empty == false) {	// wait till the buffer becomes empty
+			try { wait(); }			// are the waits breaking this?
 			catch (InterruptedException e) {}	// throwing e caused problems
 		}
 		this.msg = m;
 		empty = false;
-		System.out.println("Producer: put..." + msg.dancer + " & " + msg.dance_number);
+		notify();
+		System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
 	}
 
 	public synchronized Message get() 
@@ -33,8 +34,8 @@ class Buffer
 		// clear old msg
 		msg.dance_number = 0;
 
+		notify();
 		System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
 		return contents;
-		// maybe, if msg returned is [0,0], that is a no
 	}
 }

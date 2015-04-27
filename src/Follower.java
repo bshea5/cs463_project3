@@ -13,7 +13,7 @@ public class Follower extends Dancer implements Runnable
 		System.out.println("Follower: " + this.mNumber + " is starting.");
 		while (!this.isFinished)
 		{
-			Message request = mBuff.get();
+			Message request = mBuff.get(); 		// stuck here?
 
 			// how many times has the follower danced with the requester.
 			// might be faster with an array of timesDanced values for each leader known
