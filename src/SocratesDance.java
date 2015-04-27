@@ -42,25 +42,46 @@ public class SocratesDance
 		}
 
 		SocratesDance sd = new SocratesDance(n, m);
-		System.out.println(sd.leadersToString());
-		System.out.println(sd.followersToString());
 		sd.startDance();
 	}
 
 	public void startDance()
 	{
+		Thread[] leader_threads = new Thread[leaders.length];
+		Thread[] follower_threads = new Thread[followers.length];
+
 		// start each dancer, followers first
 		for(int i = 0; i < followers.length; i++)
-			new Thread(followers[i]).start();
+		{
+			Thread t = new Thread(followers[i]);
+			follower_threads[i] = t;
+			t.start();
+		}
 
 		for(int i = 0; i < leaders.length; i++)
-			new Thread(leaders[i]).start();
+		{
+			Thread t = new Thread(leaders[i]);
+			leader_threads[i] = t;
+			t.start();
+		}
 
-		// wait for leaders to finish
+		// wait for leader threads to finish
+		try
+		{
+			for(int i = 0; i < leader_threads.length; i++)
+				leader_threads[i].join();
+		} catch (InterruptedException e) {}
 
+		// halt the followers once the leader threads are finished
+		for(int i = 0; i < follower_threads.length; i++)
+			follower_threads[i].stop();
 
 		// print the results
 		// report, in order, each dancer's card
+		System.out.println(leadersToString());
+		System.out.println(followersToString());
+
+		System.out.println("The dance is over! ");
 	}
 
 	public void report()

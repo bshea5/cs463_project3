@@ -16,7 +16,7 @@ class Buffer
 		}
 		this.msg = m;
 		empty = false;
-		notify();
+		notifyAll();
 		//System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
 	}
 
@@ -28,7 +28,7 @@ class Buffer
 		}
 		empty = true;
 
-		//notify();
+		notifyAll();
 		//System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
 		return this.msg;
 	}

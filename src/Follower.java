@@ -6,6 +6,7 @@ public class Follower extends Dancer implements Runnable
 	public Follower(int dancer_number)
 	{
 		super(dancer_number);
+		this.mName = "Follower " + Integer.toString(mNumber);
 	}
 
 	public void run()
@@ -25,7 +26,8 @@ public class Follower extends Dancer implements Runnable
 					count++;
 			}
 			
-			System.out.println("Being asked to dance: " + request.dance_number + " by " + request.dancer.getDancerID());
+			System.out.println(mNumber + " Being asked to dance: " + request.dance_number + " by " 
+								+ request.dancer.getDancerID());
 
 			Leader leader = (Leader)request.dancer;
 			if (mDanceCard[request.dance_number] != 0) // sorry, already did this dance
@@ -38,16 +40,12 @@ public class Follower extends Dancer implements Runnable
 				request.dance_number = -1; 	// request not to be asked again
 				this.put(request, leader);
 			}
-			else // say yes! mark card
+			else // say yes! mark card and see if you're done
 			{
-				//System.out.println("Yes!");
 				this.markCard(request.dance_number, request.dancer.getDancerID());
 				request.dancer = this;
 				this.put(request, leader);	// send back request, but with the follower's number
 			}
-
-			// markCard also checks if dancer is finished
-
 		}
 	}
 }

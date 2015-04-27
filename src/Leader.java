@@ -14,47 +14,88 @@ public class Leader extends Dancer implements Runnable
 		{
 			this.dancersToAsk.add(followers[i]);
 		}
+		this.mName = "Leader " + Integer.toString(mNumber);
 	}
+
+	// NOTE: currently gets stuck if everyone keeps telling him 'no'
 
 	public void run()
 	{
 		int current_dance = 0;
+		Boolean[] asked = new Boolean[dancersToAsk.size()];
+		for(int i = 0; i < asked.length; i++)
+			asked[i] = false;
 		System.out.println("Leader: " + this.mNumber + " is starting.");
-		// keep asking dancers to dance current song
-		while(!isFinished && !dancersToAsk.isEmpty())
+
+		while(!dancersToAsk.isEmpty() && (current_dance < (mDanceCard.length)) )
 		{
+			System.out.println("Leader " + mNumber + "s " + "Current Dance: " + current_dance);
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a 
 			Message msgToSend 	= new Message(this, current_dance);
-			int randomNumber 	= rand.nextInt(dancersToAsk.size()-1);
+			int randomNumber 	= rand.nextInt(dancersToAsk.size());
 			Follower target 	= dancersToAsk.get(randomNumber);
-			
-			System.out.println("Asking follower: " + randomNumber + "for dance: " + current_dance);
-			this.put(msgToSend, target);			// put does finish
-			// is asking multiple people???
 
-			// check buffer until we have a response
-			// the getter in buffer runs until it gets a response
-			Message response = this.mBuff.get();	// gets stuck in get
-			int responseID 	= response.dancer.getDancerID();
-			if (responseID != this.mNumber)  		// She said yes! & got her number
+			// check if target is finished first, if so, remove them
+			if (target.getIsFinished())
 			{
-				this.markCard(current_dance, responseID);
-				if ( !(current_dance < (mDanceCard.length)) )
-					isFinished = true; 	// dance all dances, time to finish
-				else 
+				// dancersToAsk.remove(target);
+				// System.out.println("dancers left to ask: " + dancersToAsk.size());
+				asked[randomNumber] = true;
+			}
+			else if (asked[randomNumber])	// already asked this person
+			{
+				System.out.println("already asked you.");
+				// check if there are still ppl to ask
+				Boolean allAsked = true;
+				for(int i = 0; i < asked.length; i++)
 				{
-					current_dance++; 	// next groove
-					System.out.println("New Dance: " + current_dance);
+					if (!asked[i])
+					{
+						System.out.println("dancer: " + i + "found an guy we haven't asked");
+						allAsked = false;
+					}
+				}
+				if (allAsked)	// if asked everyone, move on to next dance
+				{
+					System.out.println("No one to do this dance with...");
+					current_dance++;
+					for(int i = 0; i < asked.length; i++)
+						asked[i] = false;
 				}
 			}
-			else if (response.dance_number == -1)	// she asked to not be asked again...
-			{
-				dancersToAsk.remove(target);
-				System.out.println("dancers left to ask: " + dancersToAsk.size());
+			// else, ask them to dance
+			else
+			{			
+				this.put(msgToSend, target);			// put does finish
+
+				// check buffer until we have a response
+				// the getter in buffer runs until it gets a response
+				Message response = this.mBuff.get();
+
+				int responseID 	= response.dancer.getDancerID();
+				if (responseID != this.mNumber)  		// She said yes! & got her number
+				{
+					this.markCard(current_dance, responseID);
+					current_dance++; // next groove
+
+					// reset dancers to ask
+					for(int i = 0; i < asked.length; i++)
+						asked[i] = false;
+				}
+				else // if (response.dance_number == -1)	// she asked to not be asked again...
+				{
+					// dancersToAsk.remove(target);
+					asked[randomNumber] = true;
+				}
+				// else
+				// {
+				// 	//System.out.println("bugger off");
+				// 	asked[randomNumber] = true;
+				// }
 			}
-			// else
-			// 	System.out.println("Crap");
-		} 
+		}
+		System.out.println("Leader " + mNumber + " is finished.");
+		isFinished = true; 
 	}
 }
