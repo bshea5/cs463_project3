@@ -25,15 +25,18 @@ public class Leader extends Dancer implements Runnable
 		{
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a 
-			Message msgToSend = new Message(this, current_dance);
-			int randomNumber = rand.nextInt(dancersToAsk.size()-1);
-			Follower target = dancersToAsk.get(randomNumber);
+			Message msgToSend 	= new Message(this, current_dance);
+			int randomNumber 	= rand.nextInt(dancersToAsk.size()-1);
+			Follower target 	= dancersToAsk.get(randomNumber);
+			
+			System.out.println("Asking follower: " + randomNumber + "for dance: " + current_dance);
 			this.put(msgToSend, target);			// put does finish
+			// is asking multiple people???
 
 			// check buffer until we have a response
 			// the getter in buffer runs until it gets a response
 			Message response = this.mBuff.get();	// gets stuck in get
-			int responseID = response.dancer.getDancerID();
+			int responseID 	= response.dancer.getDancerID();
 			if (responseID != this.mNumber)  		// She said yes! & got her number
 			{
 				this.markCard(current_dance, responseID);
@@ -50,6 +53,8 @@ public class Leader extends Dancer implements Runnable
 				dancersToAsk.remove(target);
 				System.out.println("dancers left to ask: " + dancersToAsk.size());
 			}
+			// else
+			// 	System.out.println("Crap");
 		} 
 	}
 }

@@ -13,7 +13,8 @@ public class Follower extends Dancer implements Runnable
 		System.out.println("Follower: " + this.mNumber + " is starting.");
 		while (!this.isFinished)
 		{
-			Message request = mBuff.get(); 		// stuck here?
+			Message request = this.mBuff.get(); // get request from own mailbox
+			// why is the request have the wrong dance number?
 
 			// how many times has the follower danced with the requester.
 			// might be faster with an array of timesDanced values for each leader known
@@ -23,11 +24,12 @@ public class Follower extends Dancer implements Runnable
 				if (mDanceCard[i] == request.dancer.getDancerID())
 					count++;
 			}
+			
+			System.out.println("Being asked to dance: " + request.dance_number + " by " + request.dancer.getDancerID());
 
 			Leader leader = (Leader)request.dancer;
 			if (mDanceCard[request.dance_number] != 0) // sorry, already did this dance
 			{
-				//System.out.println("Sorry.");
 				this.put(request, leader); 	// send back request 
 			}
 			else if (count >= 2) // already danced with leader twice, how rude!

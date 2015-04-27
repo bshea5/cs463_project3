@@ -17,7 +17,7 @@ class Buffer
 		this.msg = m;
 		empty = false;
 		notify();
-		// System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
+		//System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
 	}
 
 	public synchronized Message get() 
@@ -28,14 +28,8 @@ class Buffer
 		}
 		empty = true;
 
-		// get information for dance card
-		Message contents = msg;
-
-		// clear old msg
-		msg.dance_number = 0;
-
-		notify();
-		// System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
-		return contents;
+		//notify();
+		//System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
+		return this.msg;
 	}
 }

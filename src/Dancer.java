@@ -41,7 +41,6 @@ public class Dancer
 	private Message get()
 	{
 		return this.mBuff.get(); 
-		// catch (InterruptedException e) {throw e;}
 	}
 
 	// put a msg in the target's buffer
