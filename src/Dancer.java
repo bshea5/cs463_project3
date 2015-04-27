@@ -58,7 +58,7 @@ public class Dancer
 	public String toString()
 	{
 		String s = "";
-		s += "My dance number is: " + Integer.toString(mNumber);
+		s += "My dancer number is: " + Integer.toString(mNumber);
 		return s;
 	}
 

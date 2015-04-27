@@ -3,9 +3,8 @@ import java.util.Random;
 
 public class Leader extends Dancer implements Runnable
 {
-	ArrayList<Follower> dancersToAsk;
-	Random rand = new Random();
-	int current_dance;
+	ArrayList<Follower> dancersToAsk;	// list of dancers left to ask
+	Random rand = new Random();			// randomly pick dancer
 
 	public Leader(int dancer_number, Follower[] followers)
 	{
@@ -15,17 +14,17 @@ public class Leader extends Dancer implements Runnable
 		{
 			this.dancersToAsk.add(followers[i]);
 		}
-		current_dance = 0;
 	}
 
 	public void run()
 	{
+		int current_dance = 0;
 		System.out.println("Leader: " + this.mNumber + " is starting.");
 		// keep asking dancers to dance current song
 		while(!isFinished && !dancersToAsk.isEmpty())
 		{
 			// ask a random dancer to dance current dance
-			// the putter runs until the reciever is able to accept a msg
+			// the putter runs until the reciever is able to accept a 
 			Message msgToSend = new Message(this, current_dance);
 			int randomNumber = rand.nextInt(dancersToAsk.size()-1);
 			Follower target = dancersToAsk.get(randomNumber);
@@ -38,12 +37,19 @@ public class Leader extends Dancer implements Runnable
 			if (responseID != this.mNumber)  		// She said yes! & got her number
 			{
 				this.markCard(current_dance, responseID);
-				if (current_dance == mDanceCard.length-1)
+				if ( !(current_dance < (mDanceCard.length)) )
 					isFinished = true; 	// dance all dances, time to finish
 				else 
+				{
 					current_dance++; 	// next groove
+					System.out.println("New Dance: " + current_dance);
+				}
 			}
-			// else she said no ;;  ask someone else for same dance
+			else if (response.dance_number == -1)	// she asked to not be asked again...
+			{
+				dancersToAsk.remove(target);
+				System.out.println("dancers left to ask: " + dancersToAsk.size());
+			}
 		} 
 	}
 }

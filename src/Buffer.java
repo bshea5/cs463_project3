@@ -17,7 +17,7 @@ class Buffer
 		this.msg = m;
 		empty = false;
 		notify();
-		System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
+		// System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
 	}
 
 	public synchronized Message get() 
@@ -35,7 +35,7 @@ class Buffer
 		msg.dance_number = 0;
 
 		notify();
-		System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
+		// System.out.println("Consumer: got..." + contents.dancer + " & dance is: " + contents.dance_number);
 		return contents;
 	}
 }
