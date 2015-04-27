@@ -3,96 +3,76 @@ import java.util.Random;
 
 public class Leader extends Dancer implements Runnable
 {
-	ArrayList<Follower> dancersToAsk;	// list of dancers left to ask
+	Follower[] dancersToAsk;
 	Random rand = new Random();			// randomly pick dancer
+	Boolean[] asked;
 
 	public Leader(int dancer_number, Follower[] followers)
 	{
 		super(dancer_number);
-		dancersToAsk = new ArrayList<Follower>();
-		for(int i = 0; i < followers.length; i++)
-		{
-			this.dancersToAsk.add(followers[i]);
-		}
+		this.dancersToAsk = followers;
 		this.mName = "Leader " + Integer.toString(mNumber);
-	}
 
-	// NOTE: currently gets stuck if everyone keeps telling him 'no'
+		this.asked = new Boolean[followers.length];
+		for(int i = 0; i < this.asked.length; i++)
+			this.asked[i] = false;
+	}
 
 	public void run()
 	{
 		int current_dance = 0;
-		Boolean[] asked = new Boolean[dancersToAsk.size()];
-		for(int i = 0; i < asked.length; i++)
-			asked[i] = false;
+		Boolean allAsked = false;
 		System.out.println("Leader: " + this.mNumber + " is starting.");
-
-		while(!dancersToAsk.isEmpty() && (current_dance < (mDanceCard.length)) )
+		while(!allAsked && (current_dance < (mDanceCard.length)))
 		{
-			System.out.println("Leader " + mNumber + "s " + "Current Dance: " + current_dance);
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a 
 			Message msgToSend 	= new Message(this, current_dance);
-			int randomNumber 	= rand.nextInt(dancersToAsk.size());
-			Follower target 	= dancersToAsk.get(randomNumber);
+			int randomNumber 	= rand.nextInt(dancersToAsk.length);
+			Follower target 	= dancersToAsk[randomNumber];
 
-			// check if target is finished first, if so, remove them
-			if (target.getIsFinished())
+			if (asked[randomNumber] || target.getIsFinished())
 			{
-				// dancersToAsk.remove(target);
-				// System.out.println("dancers left to ask: " + dancersToAsk.size());
 				asked[randomNumber] = true;
-			}
-			else if (asked[randomNumber])	// already asked this person
-			{
-				System.out.println("already asked you.");
-				// check if there are still ppl to ask
-				Boolean allAsked = true;
+
+				allAsked = true;
 				for(int i = 0; i < asked.length; i++)
 				{
 					if (!asked[i])
 					{
-						System.out.println("dancer: " + i + "found an guy we haven't asked");
 						allAsked = false;
 					}
 				}
-				if (allAsked)	// if asked everyone, move on to next dance
+				if (allAsked)	// if asked everyone, move on to next dance 
 				{
-					System.out.println("No one to do this dance with...");
+					System.out.println(mNumber + " No one to do dance " + current_dance + " with...");
 					current_dance++;
 					for(int i = 0; i < asked.length; i++)
 						asked[i] = false;
 				}
 			}
-			// else, ask them to dance
-			else
+			else	// ask them to dance
 			{			
-				this.put(msgToSend, target);			// put does finish
+				this.put(msgToSend, target);
 
 				// check buffer until we have a response
 				// the getter in buffer runs until it gets a response
 				Message response = this.mBuff.get();
 
-				int responseID 	= response.dancer.getDancerID();
-				if (responseID != this.mNumber)  		// She said yes! & got her number
+				if (response.dance_number != (-1))  // She didn't say no!
 				{
+					int responseID 	= response.dancer.getDancerID();
 					this.markCard(current_dance, responseID);
 					current_dance++; // next groove
 
-					// reset dancers to ask
+					// reset asked[]
 					for(int i = 0; i < asked.length; i++)
 						asked[i] = false;
 				}
-				else // if (response.dance_number == -1)	// she asked to not be asked again...
+				else
 				{
-					// dancersToAsk.remove(target);
 					asked[randomNumber] = true;
 				}
-				// else
-				// {
-				// 	//System.out.println("bugger off");
-				// 	asked[randomNumber] = true;
-				// }
 			}
 		}
 		System.out.println("Leader " + mNumber + " is finished.");

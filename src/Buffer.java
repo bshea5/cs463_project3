@@ -11,12 +11,12 @@ class Buffer
 	public synchronized void put(Message m) 
 	{ 
 		while (empty == false) {	// wait till the buffer becomes empty
-			try { wait(); }			// are the waits breaking this?
+			try { wait(); }	
 			catch (InterruptedException e) {}	// throwing e caused problems
 		}
 		this.msg = m;
 		empty = false;
-		notifyAll();
+		notifyAll();				// Needed to be notifyAll instead of notify
 		//System.out.println("Producer: put..." + msg.dancer + " & dance is: " + msg.dance_number);
 	}
 

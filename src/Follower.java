@@ -30,21 +30,16 @@ public class Follower extends Dancer implements Runnable
 								+ request.dancer.getDancerID());
 
 			Leader leader = (Leader)request.dancer;
-			if (mDanceCard[request.dance_number] != 0) // sorry, already did this dance
+			if (mDanceCard[request.dance_number] != 0 || count >= 2) // nope.
 			{
-				this.put(request, leader); 	// send back request 
-			}
-			else if (count >= 2) // already danced with leader twice, how rude!
-			{
-				//System.out.println("Rude.");
-				request.dance_number = -1; 	// request not to be asked again
-				this.put(request, leader);
+				request.dance_number = -1;
+				this.put(request, leader); 	// send back request with -1 for dance_number
 			}
 			else // say yes! mark card and see if you're done
 			{
 				this.markCard(request.dance_number, request.dancer.getDancerID());
 				request.dancer = this;
-				this.put(request, leader);	// send back request, but with the follower's number
+				this.put(request, leader);	// send back request, but with the follower's own number
 			}
 		}
 	}
