@@ -23,7 +23,7 @@ public class Leader extends Dancer implements Runnable
 		int current_dance = 0;
 		Boolean allAsked = false;
 		System.out.println("Leader: " + this.mNumber + " is starting.");
-		while(!allAsked && (current_dance < (mDanceCard.length)))
+		while(current_dance < (mDanceCard.length))
 		{
 			// ask a random dancer to dance current dance
 			// the putter runs until the reciever is able to accept a 
@@ -49,6 +49,7 @@ public class Leader extends Dancer implements Runnable
 					current_dance++;
 					for(int i = 0; i < asked.length; i++)
 						asked[i] = false;
+					allAsked = false;
 				}
 			}
 			else	// ask them to dance
