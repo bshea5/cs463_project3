@@ -53,7 +53,8 @@ public class Leader extends Dancer implements Runnable
 				}
 			}
 			else	// ask them to dance
-			{			
+			{		
+				System.out.println("Send Message to follower: " + target.getDancerID());	
 				this.put(msgToSend, target);
 
 				// check buffer until we have a response

@@ -42,5 +42,16 @@ public class Follower extends Dancer implements Runnable
 				this.put(request, leader);	// send back request, but with the follower's own number
 			}
 		}
+		System.out.println("Follower " + mNumber + " is finished.");
+		
+		// still check requests, but refuse them all.
+		while (this.isFinished)
+		{
+			Message request = this.mBuff.get();
+
+			Leader leader = (Leader)request.dancer;
+			request.dance_number = -1;
+			this.put(request, leader);
+		}
 	}
 }
