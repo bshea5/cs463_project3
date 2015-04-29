@@ -22,7 +22,7 @@ public class Leader extends Dancer implements Runnable
 	{
 		int current_dance = 0;
 		Boolean allAsked = false;
-		System.out.println("Leader: " + this.mNumber + " is starting.");
+		//System.out.println("Leader: " + this.mNumber + " is starting.");
 		while(current_dance < (mDanceCard.length))
 		{
 			// ask a random dancer to dance current dance
@@ -45,7 +45,7 @@ public class Leader extends Dancer implements Runnable
 				}
 				if (allAsked)	// if asked everyone, move on to next dance 
 				{
-					System.out.println(mNumber + " No one to do dance " + current_dance + " with...");
+					//System.out.println(mNumber + " No one to do dance " + current_dance + " with...");
 					current_dance++;
 					for(int i = 0; i < asked.length; i++)
 						asked[i] = false;
@@ -54,7 +54,7 @@ public class Leader extends Dancer implements Runnable
 			}
 			else	// ask them to dance
 			{		
-				System.out.println("Send Message to follower: " + target.getDancerID());	
+				//System.out.println("Send Message to follower: " + target.getDancerID());	
 				this.put(msgToSend, target);
 
 				// check buffer until we have a response
@@ -77,7 +77,7 @@ public class Leader extends Dancer implements Runnable
 				}
 			}
 		}
-		System.out.println("Leader " + mNumber + " is finished.");
+		//System.out.println("Leader " + mNumber + " is finished.");
 		isFinished = true; 
 	}
 }

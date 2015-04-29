@@ -11,7 +11,7 @@ public class Follower extends Dancer implements Runnable
 
 	public void run()
 	{
-		System.out.println("Follower: " + this.mNumber + " is starting.");
+		//System.out.println("Follower: " + this.mNumber + " is starting.");
 		while (!this.isFinished)
 		{
 			Message request = this.mBuff.get(); // get request from own mailbox
@@ -26,8 +26,8 @@ public class Follower extends Dancer implements Runnable
 					count++;
 			}
 			
-			System.out.println(mNumber + " Being asked to dance: " + request.dance_number + " by " 
-								+ request.dancer.getDancerID());
+			//System.out.println(mNumber + " Being asked to dance: " + request.dance_number + " by " 
+			//					+ request.dancer.getDancerID());
 
 			Leader leader = (Leader)request.dancer;
 			if (mDanceCard[request.dance_number] != 0 || count >= 2) // nope.
@@ -42,7 +42,7 @@ public class Follower extends Dancer implements Runnable
 				this.put(request, leader);	// send back request, but with the follower's own number
 			}
 		}
-		System.out.println("Follower " + mNumber + " is finished.");
+		//System.out.println("Follower " + mNumber + " is finished.");
 		
 		// still check requests, but refuse them all.
 		while (this.isFinished)
