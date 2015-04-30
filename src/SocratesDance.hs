@@ -31,9 +31,9 @@ reset list = [x*0 | x <- [1..length list]]
 -- followersAsked must be given as a list of all zeros with length equal to
 -- the number of followers
 -- dances must be given as a length 8 list with all values initialized to -2
-leader :: Int -> [(MVar Int, [Int])] -> [Int] -> [Int] -> [Int]
+leader :: Int -> [MVar Int] -> [Int] -> [Int] -> [Int]
 leader id followers dances followersAsked
 	| not $ elem 0 followersAsked = if ((findInstance dances (-2) 0) /= (-1))
 					then leader id followers (setValue dances (findInstance dances (-2) 0) (-1)) (reset followersAsked)
 					else dances
-	| otherwise = dances
+	| otherwise = putMVar (followers !! (findInstance followers 0 0)) id
