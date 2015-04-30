@@ -3,47 +3,81 @@ import java.util.Random;
 
 public class Leader extends Dancer implements Runnable
 {
-	ArrayList<Follower> dancersToAsk;
-	Random rand = new Random();
-	int current_dance;
+	Follower[] dancersToAsk;
+	Random rand = new Random();			// randomly pick dancer
+	Boolean[] asked;
 
 	public Leader(int dancer_number, Follower[] followers)
 	{
 		super(dancer_number);
-		dancersToAsk = new ArrayList<Follower>();
-		for(int i = 0; i < followers.length; i++)
-		{
-			this.dancersToAsk.add(followers[i]);
-		}
-		current_dance = 0;
+		this.dancersToAsk = followers;
+		this.mName = "Leader " + Integer.toString(mNumber);
+
+		this.asked = new Boolean[followers.length];
+		for(int i = 0; i < this.asked.length; i++)
+			this.asked[i] = false;
 	}
 
 	public void run()
 	{
-		System.out.println("Leader: " + this.mNumber + " is starting.");
-		// keep asking dancers to dance current song
-		while(!isFinished && !dancersToAsk.isEmpty())
+		int current_dance = 0;
+		Boolean allAsked = false;
+		//System.out.println("Leader: " + this.mNumber + " is starting.");
+		while(current_dance < (mDanceCard.length))
 		{
 			// ask a random dancer to dance current dance
-			// the putter runs until the reciever is able to accept a msg
-			Message msgToSend = new Message(this, current_dance);
-			int randomNumber = rand.nextInt(dancersToAsk.size()-1);
-			Follower target = dancersToAsk.get(randomNumber);
-			this.put(msgToSend, target);			// put does finish
+			// the putter runs until the reciever is able to accept a 
+			Message msgToSend 	= new Message(this, current_dance);
+			int randomNumber 	= rand.nextInt(dancersToAsk.length);
+			Follower target 	= dancersToAsk[randomNumber];
 
-			// check buffer until we have a response
-			// the getter in buffer runs until it gets a response
-			Message response = this.mBuff.get();	// gets stuck in get
-			int responseID = response.dancer.getDancerID();
-			if (responseID != this.mNumber)  		// She said yes! & got her number
+			if (asked[randomNumber] || target.getIsFinished())
 			{
-				this.markCard(current_dance, responseID);
-				if (current_dance == mDanceCard.length-1)
-					isFinished = true; 	// dance all dances, time to finish
-				else 
-					current_dance++; 	// next groove
+				asked[randomNumber] = true;
+
+				allAsked = true;
+				for(int i = 0; i < asked.length; i++)
+				{
+					if (!asked[i])
+					{
+						allAsked = false;
+					}
+				}
+				if (allAsked)	// if asked everyone, move on to next dance 
+				{
+					//System.out.println(mNumber + " No one to do dance " + current_dance + " with...");
+					current_dance++;
+					for(int i = 0; i < asked.length; i++)
+						asked[i] = false;
+					allAsked = false;
+				}
 			}
-			// else she said no ;;  ask someone else for same dance
-		} 
+			else	// ask them to dance
+			{		
+				//System.out.println("Send Message to follower: " + target.getDancerID());	
+				this.put(msgToSend, target);
+
+				// check buffer until we have a response
+				// the getter in buffer runs until it gets a response
+				Message response = this.mBuff.get();
+
+				if (response.dance_number != (-1))  // She didn't say no!
+				{
+					int responseID 	= response.dancer.getDancerID();
+					this.markCard(current_dance, responseID);
+					current_dance++; // next groove
+
+					// reset asked[]
+					for(int i = 0; i < asked.length; i++)
+						asked[i] = false;
+				}
+				else
+				{
+					asked[randomNumber] = true;
+				}
+			}
+		}
+		//System.out.println("Leader " + mNumber + " is finished.");
+		isFinished = true; 
 	}
 }
