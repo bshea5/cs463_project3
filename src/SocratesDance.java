@@ -79,7 +79,7 @@ public class SocratesDance
 		// print the results
 		// report, in order, each dancer's card
 		System.out.println(leadersToString());
-		System.out.println(followersToString());
+		//System.out.println(followersToString());
 
 		System.out.println("The dance is over! ");
 	}
