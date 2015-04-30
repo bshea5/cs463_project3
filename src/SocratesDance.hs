@@ -1,9 +1,11 @@
+import Control.Concurrent.MVar
+
 -- leaders, followers, and dance numbers are all indexed from zero in this
 -- program
 
 -- sets the value at the spot in the list marked by ind (index) to val
-setValue :: [Int] -> Int -> Int -> Int
-setValue list ind val = (fst parts) ++ val ++ (tail (snd parts))
+setValue :: [Int] -> Int -> Int -> [Int]
+setValue list ind val = (fst parts) ++ [val] ++ (tail (snd parts))
 	where parts = splitAt ind list
 
 -- replaces the first zero found with a one
@@ -29,6 +31,9 @@ reset list = [x*0 | x <- [1..length list]]
 -- followersAsked must be given as a list of all zeros with length equal to
 -- the number of followers
 -- dances must be given as a length 8 list with all values initialized to -2
-leader :: Int -> [(MVar Int, [Int])] -> Int -> [Int] -> [Int]
+leader :: Int -> [(MVar Int, [Int])] -> [Int] -> [Int] -> [Int]
 leader id followers dances followersAsked
-	| not $ elem 0 followersAsked = 
+	| not $ elem 0 followersAsked = if ((findInstance dances (-2) 0) /= (-1))
+					then leader id followers (setValue dances (findInstance dances (-2) 0) (-1)) (reset followersAsked)
+					else dances
+	| otherwise = dances
