@@ -78,7 +78,6 @@ follower id (MB mv) card = loop
 				let marked_card = markCard card dance l_id 
 				putMVar l_mv (MSG ((Follower id (MB mv) marked_card), dance))		-- yes
 			-- followers don't stop for now. so loop
-			-- also still need to mark card, redo loop
 			loop 
 			-- where
 			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
@@ -89,7 +88,7 @@ follower id (MB mv) card = loop
 
 leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> IO ()
 leaderH id followers (MB mv) card current_dance
-	| current_dance > 8 	= return ()
+	| current_dance > 8 	= putStr $ showCard card 	-- give back card contents
 	| otherwise 			= do
 		-- pick a dancer
 		index <- randomRIO (0,7)
@@ -115,6 +114,10 @@ dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0
 	-- wait for them to dance it out
 	-- when leaders are done, end it all
 	-- print results
+
+
+
+
 
 -- data Logger = Logger (MVar LogCommand)
 -- data LogCommand = Message String | Stop (MVar ())
