@@ -1,5 +1,6 @@
 import Control.Concurrent
 import System.Random
+import System.Environment
 
 data DanceCard 	= DC [Int]								deriving (Show)
 data Message 	= MSG (Dancer, Int)
@@ -11,7 +12,23 @@ data Dancer 	= Follower Int Mailbox DanceCard |
 -- will have to write this in 'main' too
 dances = ["Waltz","Tango","Foxtrot","Quickstep",
 		  "Rumba","Samba","Cha Cha","Jive"]
- 
+
+-- sets all values of a list to zero
+reset :: [Int] -> [Int]
+reset list = [x*0 | x <- [1..length list]]
+
+-- finds if there is an instance of val
+findInstance :: [Int] -> Int -> Bool
+findInstance list val
+	| null list        = False
+	| head list == val = True
+	| otherwise        = findInstance (tail list) val
+
+-- mark a 1 at some index in the list
+markIndex :: [Int] -> Int -> [Int]
+markIndex list index = (fst split) ++ [1] ++ (tail $ snd split)
+ 	where
+		split = splitAt index list
 
 -- Card Stuff ==================================================
 
@@ -71,25 +88,27 @@ follower id (MB mv) card = loop
 			(MSG ((Leader l_id followers (MB l_mv) card), dance)) <- takeMVar mv
 			-- check contents of message & send message back to leader
 			if (dancedSong card dance) 
-				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))	-- no
+				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))		-- no
 			else if (dancedWithID card l_id 0) > 2 
-				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))	-- no
+				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))		-- no
 			else do
 				let marked_card = markCard card dance l_id 
-				putMVar l_mv (MSG ((Follower id (MB mv) marked_card), dance))		-- yes
+				putMVar l_mv (MSG ((Follower id (MB mv) marked_card), dance))	-- yes
 			-- followers don't stop for now. so loop
 			loop 
 			-- where
 			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
 			--	respond_yes = (MSG ((Leader id followers (MB l_mv) card)), id)
+			-- send a kill message to followers to stop
 
 -- leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> IO ()
 -- might have to do leader with a state?
 
-leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> IO ()
-leaderH id followers (MB mv) card current_dance
-	| current_dance > 8 	= putStr $ showCard card 	-- give back card contents
-	| otherwise 			= do
+leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> [Int] -> IO ()
+leaderH id followers (MB mv) card current_dance peopleAsked
+	| current_dance > 8 					= putStr $ showCard card 	-- give back card contents
+	| (findInstance peopleAsked 0) == False = leaderH id followers (MB mv) card current_dance (reset peopleAsked)	-- asked everyone, go to next song
+	| otherwise 							= do
 		-- pick a dancer
 		index <- randomRIO (0,7)
 		let (Follower f_id (MB f_mv) f_card) = followers !! index
@@ -97,15 +116,21 @@ leaderH id followers (MB mv) card current_dance
 		putMVar f_mv (MSG ((Leader id followers (MB mv) card), current_dance))
 		-- get a response, if yes, mark card and increment current_dance
 		(MSG (dancer, response)) <- takeMVar mv
-		if response == (-1) then leaderH id followers (MB mv) card current_dance -- no
+		-- check if already asked for this dance, than try asking
+		if (peopleAsked!!index) == 1 then leaderH id followers (MB mv) card current_dance peopleAsked
+		else if response == (-1) then do
+			let new_peopleAsked = markIndex peopleAsked index 				-- mark that you asked this person
+			leaderH id followers (MB mv) card current_dance new_peopleAsked -- no
 		else do
-			let markedCard = markCard card current_dance index
-			leaderH id followers (MB mv) markedCard (current_dance+1)			-- yes
+			let markedCard 		= markCard card current_dance index
+			let new_peopleAsked = reset peopleAsked
+			leaderH id followers (MB mv) markedCard (current_dance+1) new_peopleAsked	-- yes
 		-- repeat
 
 dance :: Dancer -> IO ()
 dance (Follower id mailbox card) 			= follower id mailbox card
-dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0
+dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0 peopleAsked
+	where peopleAsked = [x*0 | x<-[0..length followers]]
 
 -- ==============================================================
 -- startDance
@@ -116,26 +141,30 @@ dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0
 	-- print results
 
 
+main :: IO ()
+main = do 
+	argsList <- getArgs
+	let n = (read (argsList !! 0) :: Int)
+	let	m = (read (argsList !! 1) :: Int)
+	let	emptyCard = [0,0,0,0,0,0,0,0] 	-- 8 dances
+	emptyMVar <- newEmptyMVar
+
+	-- create m followers and n leaders
+	let	followerList 	= [(Follower id (MB emptyMVar) (DC emptyCard)) 				| id<-[0..m]]
+	let	leaderList 		= [(Leader   id followerList (MB emptyMVar) (DC emptyCard)) | id<-[0..n]]
+
+	-- start their threads by mapping forkIO
+	-- map dance followerList
+	-- map dance leaderList
+
+	-- must bind in order to run
+	followersDancing <- mapM forkIO (map dance followerList)
+	leadersDancing 	<- mapM forkIO (map dance leaderList)
 
 
+	putStr "Done."
 
--- data Logger = Logger (MVar LogCommand)
--- data LogCommand = Message String | Stop (MVar ())
 
-	-- logger :: Logger -> IO ()
-	-- logger (Logger m) = loop
-	--  where
-	--   loop = do
-	--    cmd <- takeMVar m
-	--    case cmd of
-	--      Message msg -> do
-	--        putStrLn msg
-	--        loop
-	--      Stop s -> do
-	--        putStrLn "logger: stop"
-	--        putMVar s ()
-
-		
 
 
 
