@@ -87,7 +87,7 @@ follower id (MB mv) card = loop
 	where
 		loop = do
 			-- get message from mailbox
-			(MSG ((Leader l_id followers (MB l_mv) card), dance)) <- takeMVar mv
+			(MSG ((Leader l_id followers (MB l_mv) l_card), dance)) <- takeMVar mv
 			-- check contents of message & send message back to leader
 			if (dancedSong card dance) 
 				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))		-- no
