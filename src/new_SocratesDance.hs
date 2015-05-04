@@ -1,3 +1,5 @@
+module Main where
+
 import Control.Concurrent
 import System.Random
 import System.Environment
@@ -99,7 +101,7 @@ follower id (MB mv) card = loop
 			-- where
 			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
 			--	respond_yes = (MSG ((Leader id followers (MB l_mv) card)), id)
-			-- send a kill message to followers to stop
+			-- send a kill message to followers to stop?
 
 -- leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> IO ()
 -- might have to do leader with a state?
@@ -107,24 +109,30 @@ follower id (MB mv) card = loop
 leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> [Int] -> IO ()
 leaderH id followers (MB mv) card current_dance peopleAsked
 	| current_dance > 8 					= putStr $ showCard card 	-- give back card contents
-	| (findInstance peopleAsked 0) == False = leaderH id followers (MB mv) card current_dance (reset peopleAsked)	-- asked everyone, go to next song
+	| (findInstance peopleAsked 0) == False 
+		= leaderH id followers (MB mv) card (current_dance+1) (reset peopleAsked)	-- asked everyone, go to next song
 	| otherwise 							= do
 		-- pick a dancer
-		index <- randomRIO (0,7)
-		let (Follower f_id (MB f_mv) f_card) = followers !! index
+		index <- randomRIO (0,((length followers)-1))
+		let (Follower f_id (MB f_mv) f_card) = followers!!index
 		-- ask them to dance
 		putMVar f_mv (MSG ((Leader id followers (MB mv) card), current_dance))
-		-- get a response, if yes, mark card and increment current_dance
+		-- get a response
 		(MSG (dancer, response)) <- takeMVar mv
 		-- check if already asked for this dance, than try asking
-		if (peopleAsked!!index) == 1 then leaderH id followers (MB mv) card current_dance peopleAsked
+		if (peopleAsked!!index) == 1 then do
+			putStrLn "already asked"
+			leaderH id followers (MB mv) card current_dance peopleAsked
 		else if response == (-1) then do
-			let new_peopleAsked = markIndex peopleAsked index 				-- mark that you asked this person
-			leaderH id followers (MB mv) card current_dance new_peopleAsked -- no
+			putStrLn "Denied!"
+			let new_peopleAsked = markIndex peopleAsked index 
+			leaderH id followers (MB mv) card current_dance new_peopleAsked
+		-- follower said yes, mark card and move on to next dance
 		else do
+			putStrLn "She said yes!"
 			let markedCard 		= markCard card current_dance index
 			let new_peopleAsked = reset peopleAsked
-			leaderH id followers (MB mv) markedCard (current_dance+1) new_peopleAsked	-- yes
+			leaderH id followers (MB mv) markedCard (current_dance+1) new_peopleAsked
 		-- repeat
 
 dance :: Dancer -> IO ()
@@ -150,8 +158,8 @@ main = do
 	emptyMVar <- newEmptyMVar
 
 	-- create m followers and n leaders
-	let	followerList 	= [(Follower id (MB emptyMVar) (DC emptyCard)) 				| id<-[0..m]]
-	let	leaderList 		= [(Leader   id followerList (MB emptyMVar) (DC emptyCard)) | id<-[0..n]]
+	let	followerList = [(Follower id 			  (MB emptyMVar) (DC emptyCard)) | id<-[0..m]]
+	let	leaderList 	 = [(Leader   id followerList (MB emptyMVar) (DC emptyCard)) | id<-[0..n]]
 
 	-- start their threads by mapping forkIO
 	-- map dance followerList
@@ -159,13 +167,20 @@ main = do
 
 	-- must bind in order to run
 	followersDancing <- mapM forkIO (map dance followerList)
-	leadersDancing 	<- mapM forkIO (map dance leaderList)
+	leadersDancing 	 <- mapM forkIO (map dance leaderList)
+
+	--map putStr leadersDancing
+
+	putStr "Done.\n"
 
 
-	putStr "Done."
 
 
-
+-- Notes
+-- to compile use
+-- 	ghc --make -o executeDancing new_SocratesDance.hs
+-- then run using
+-- 	./executeDancing n m
 
 
 
