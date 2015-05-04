@@ -93,7 +93,7 @@ public class SocratesDance
 	public String leadersToString()
 	{
 		//String s = "Leaders:\n";
-		String s = "";
+		String s = "\n";
 		for(int i = 0; i < leaders.length; i++)
 		{
 			s += this.leaders[i].toString() + "\n";
@@ -104,7 +104,7 @@ public class SocratesDance
 	public String followersToString()
 	{
 		//String s = "Followers:\n";
-		String s = "";
+		String s = "\n";
 		for(int i = 0; i < this.followers.length; i++)
 		{
 			s += this.followers[i].toString() + "\n";

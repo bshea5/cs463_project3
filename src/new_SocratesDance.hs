@@ -157,20 +157,17 @@ main = do
 	let	emptyCard = [0,0,0,0,0,0,0,0] 	-- 8 dances
 	emptyMVar <- newEmptyMVar
 
-	-- create m followers and n leaders
-	let	followerList = [(Follower id 			  (MB emptyMVar) (DC emptyCard)) | id<-[0..m]]
-	let	leaderList 	 = [(Leader   id followerList (MB emptyMVar) (DC emptyCard)) | id<-[0..n]]
+	-- create data for m followers and n leaders
+	let	followerList = [(Follower id 			  (MB emptyMVar) (DC emptyCard)) | id<-[0..(m-1)]]
+	let	leaderList 	 = [(Leader   id followerList (MB emptyMVar) (DC emptyCard)) | id<-[0..(n-1)]]
 
-	-- start their threads by mapping forkIO
-	-- map dance followerList
-	-- map dance leaderList
-
-	-- must bind in order to run
+	-- must bind in order to run according to Dr. Snyder
 	followersDancing <- mapM forkIO (map dance followerList)
 	leadersDancing 	 <- mapM forkIO (map dance leaderList)
 
 	--map putStr leadersDancing
 
+	threadDelay $ 1000*5000
 	putStr "Done.\n"
 
 
