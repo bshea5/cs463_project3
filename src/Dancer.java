@@ -73,10 +73,15 @@ public class Dancer
 		};
 
 		String s = "";
-		s += mName + "\n";
+		s += mName + ":\n";
 		for(int i = 0; i < mDanceCard.length; i++)
 		{
-			s += dance_names[i] + "\twith " + Integer.toString(mDanceCard[i]) + "\n";
+			String with_whom = "";
+			if (mDanceCard[i] == 0)
+				with_whom = "\t------";
+			else 
+				with_whom = "\twith " + Integer.toString(mDanceCard[i]);
+			s += dance_names[i] + with_whom + "\n";
 		}
 		return s;
 	}
