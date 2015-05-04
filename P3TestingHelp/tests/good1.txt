@@ -1,0 +1,39 @@
+Leader 1:
+Waltz      with 3
+Tango      with 3
+Foxtrot    ------
+Quickstep  with 1
+Rumba      with 4
+Samba      with 2
+Cha Cha    with 2
+Jive       with 4
+
+Leader 2:
+Waltz      with 4
+Tango      with 2
+Foxtrot    with 1
+Quickstep  with 4
+Rumba      with 2
+Samba      with 3
+Cha Cha    with 1
+Jive       with 3
+
+Leader 3:
+Waltz      with 2
+Tango      with 1
+Foxtrot    with 4
+Quickstep  with 3
+Rumba      with 3
+Samba      with 4
+Cha Cha    ------
+Jive       with 1
+
+Leader 4:
+Waltz      ------
+Tango      with 4
+Foxtrot    with 3
+Quickstep  with 2
+Rumba      with 1
+Samba      with 1
+Cha Cha    with 4
+Jive       with 2

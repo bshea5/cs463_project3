@@ -1,0 +1,202 @@
+Leader 1
+Waltz	  	with 20
+Tango	  	with 9
+Foxtrot  	with 2
+Quickstep	with 15
+Rumba    	with 20
+Samba	  	with 17
+Cha Cha  	with 4
+Jive	  	with 10
+
+Leader 2
+Waltz	  	with 9
+Tango	  	with 17
+Foxtrot  	with 10
+Quickstep	with 11
+Rumba    	with 10
+Samba	  	with 14
+Cha Cha  	with 8
+Jive	  	with 7
+
+Leader 3
+Waltz	  	with 14
+Tango	  	with 11
+Foxtrot  	with 13
+Quickstep	with 5
+Rumba    	with 5
+Samba	  	with 2
+Cha Cha  	with 3
+Jive	  	with 1
+
+Leader 4
+Waltz	  	with 7
+Tango	  	with 3
+Foxtrot  	with 6
+Quickstep	with 8
+Rumba    	with 8
+Samba	  	with 20
+Cha Cha  	with 6
+Jive	  	with 16
+
+Leader 5
+Waltz	  	with 13
+Tango	  	with 12
+Foxtrot  	with 8
+Quickstep	with 13
+Rumba    	with 15
+Samba	  	with 8
+Cha Cha  	with 20
+Jive	  	with 15
+
+Leader 6
+Waltz	  	with 19
+Tango	  	with 20
+Foxtrot  	with 3
+Quickstep	with 19
+Rumba    	with 7
+Samba	  	with 5
+Cha Cha  	with 16
+Jive	  	with 3
+
+Leader 7
+Waltz	  	with 8
+Tango	  	with 14
+Foxtrot  	with 17
+Quickstep	with 9
+Rumba    	with 16
+Samba	  	with 6
+Cha Cha  	with 9
+Jive	  	with 18
+
+Leader 8
+Waltz	  	with 12
+Tango	  	with 6
+Foxtrot  	with 20
+Quickstep	with 20
+Rumba    	with 18
+Samba	  	with 7
+Cha Cha  	with 12
+Jive	  	with 6
+
+Leader 9
+Waltz	  	with 4
+Tango	  	with 8
+Foxtrot  	with 18
+Quickstep	with 3
+Rumba    	with 13
+Samba	  	with 19
+Cha Cha  	with 14
+Jive	  	with 13
+
+Leader 10
+Waltz	  	with 15
+Tango	  	with 2
+Foxtrot  	with 9
+Quickstep	with 17
+Rumba    	with 3
+Samba	  	with 4
+Cha Cha  	with 17
+Jive	  	with 14
+
+Leader 11
+Waltz	  	with 10
+Tango	  	with 15
+Foxtrot  	with 16
+Quickstep	with 2
+Rumba    	with 4
+Samba	  	with 10
+Cha Cha  	with 13
+Jive	  	with 4
+
+Leader 12
+Waltz	  	with 18
+Tango	  	with 5
+Foxtrot  	with 11
+Quickstep	with 4
+Rumba    	with 2
+Samba	  	with 12
+Cha Cha  	with 10
+Jive	  	with 20
+
+Leader 13
+Waltz	  	with 6
+Tango	  	with 4
+Foxtrot  	with 14
+Quickstep	with 18
+Rumba    	with 17
+Samba	  	with 18
+Cha Cha  	with 15
+Jive	  	with 17
+
+Leader 14
+Waltz	  	with 11
+Tango	  	with 10
+Foxtrot  	with 5
+Quickstep	with 7
+Rumba    	with 6
+Samba	  	with 15
+Cha Cha  	with 1
+Jive	  	with 9
+
+Leader 15
+Waltz	  	with 16
+Tango	  	with 18
+Foxtrot  	with 12
+Quickstep	with 14
+Rumba    	with 1
+Samba	  	with 16
+Cha Cha  	with 19
+Jive	  	with 12
+
+Leader 16
+Waltz	  	with 5
+Tango	  	with 7
+Foxtrot  	with 19
+Quickstep	with 12
+Rumba    	with 12
+Samba	  	with 13
+Cha Cha  	with 18
+Jive	  	with 5
+
+Leader 17
+Waltz	  	with 17
+Tango	  	with 1
+Foxtrot  	with 1
+Quickstep	with 6
+Rumba    	with 19
+Samba	  	with 9
+Cha Cha  	with 2
+Jive	  	with 8
+
+Leader 18
+Waltz	  	with 2
+Tango	  	with 16
+Foxtrot  	with 15
+Quickstep	with 10
+Rumba    	with 9
+Samba	  	with 1
+Cha Cha  	with 5
+Jive	  	with 19
+
+Leader 19
+Waltz	  	with 3
+Tango	  	with 19
+Foxtrot  	with 4
+Quickstep	with 16
+Rumba    	with 11
+Samba	  	with 11
+Cha Cha  	with 7
+Jive	  	with 2
+
+Leader 20
+Waltz	  	with 1
+Tango	  	with 13
+Foxtrot  	with 7
+Quickstep	with 1
+Rumba    	with 14
+Samba	  	with 3
+Cha Cha  	with 11
+Jive	  	with 11
+
+
+The dance is over! 

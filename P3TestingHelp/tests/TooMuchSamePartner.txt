@@ -1,0 +1,19 @@
+Leader 1:
+Waltz      with 1
+Tango      with 1
+Foxtrot    with 1
+Quickstep  with 1
+Rumba      with 1
+Samba      with 1
+Cha Cha    with 1
+Jive       with 1
+
+Leader 2:
+Waltz      with 2
+Tango      with 2
+Foxtrot    with 2
+Quickstep  with 2
+Rumba      with 2
+Samba      with 2
+Cha Cha    with 2
+Jive       with 2

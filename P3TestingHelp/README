@@ -1,0 +1,66 @@
+
+################################################################################
+
+PURPOSE:
+
+These files should help you to understand how your concurrency assignment will
+be graded. We'll generate outputs to files, and then check them with this java
+class (or an updated version, as need be). Hopefully by using it ahead of time,
+you'll be sure you're getting the correct formatting, and grading and grades will
+all benefit as a result.
+
+
+################################################################################
+
+TO RUN:
+
+ - generate your output, put it in a file:
+
+	commandLine voodoo N M  >  sampleout.txt
+
+
+ - compile the checker:
+
+	javac DanceCardChecker.java
+
+
+ - run the DanceCardChecker
+
+	java DanceCardChecker sampleout.txt N M
+
+
+################################################################################
+
+SHARED TEST CASES
+
+We have some test cases provided here - by running the DanceCardChecker on them,
+you can get a sense of how the error messages would respond. Your program is 
+supposed to create things like these, but is never expected to generate these
+exact outputs. Especially since most of them are bad!
+
+
+
+Consistent outputs:
+
+good1.txt : 4x4
+good2.txt : 4x6
+
+
+Inconsistent outputs:
+
+FollowerInDanceTwice.txt : 4x4
+ - F3 is dancing the Tango with L1 and L2
+ - Forgetful!
+
+LeaderInDanceTwice.txt   : 4x4
+ - L1 is dancing the Waltz twice (With F2, F3)
+ - Duplicitous!
+
+MissedOpportunities.txt  : 4x4
+ - L3, F1 aren't dancing the Cha Cha when they could
+ - Regrets!
+
+TooMuchSamePartner.txt   : 2x2
+ - L1 and F1 are dancing everything together
+ - Antisocial!
+
