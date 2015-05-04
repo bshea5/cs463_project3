@@ -7,6 +7,7 @@ data Dancer 	= Follower Int Mailbox DanceCard |
 				  Leader Int [Dancer] Mailbox DanceCard
 
 -- must have the dances defined, 8 of them
+-- will have to write this in 'main' too
 dances = ["Waltz","Tango","Foxtrot","Quickstep",
 		  "Rumba","Samba","Cha Cha","Jive"]
  
@@ -61,17 +62,31 @@ showCardH (x:xs) s = s ++ (dances!!dance_num) ++ " with " ++ (show x) ++ "\n" ++
 -- instance Dancer Follower where
 -- instance Dancer Leader where
 
--- follower :: Int -> Mailbox -> DanceCard -> IO ()
--- follower id (MB mv) card = loop
--- where
---	loop = do
---		(MSG (dancer, dance)) <- takeMVar mv
---		-- check contents of message
---		-- send message back to leader
+follower :: Int -> Mailbox -> DanceCard -> IO ()
+follower id (MB mv) card = loop
+	where
+		loop = do
+			-- get message from mailbox
+			(MSG ((Leader id followers (MB l_mv) card), dance)) <- takeMVar mv
+			-- check contents of message & send message back to leader
+			if (dancedSong card dance) 
+				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
+			else if (dancedWithID card id 0) > 2 
+				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
+			else 
+				putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), id))		-- yes
+			-- followers don't stop for now. so loop
+			loop 
+			-- where
+			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
+			--	respond_yes = (MSG ((Leader id followers (MB l_mv) card)), id)
 
--- dance :: Dancer -> IO ()
--- dance (Follower id mailbox card) 		= follower id mailbox card
--- dance (Leader id followers mailbox card) = leader id followers mailbox card
+-- leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> IO ()
+-- might have to do leader with a state?
+
+dance :: Dancer -> IO ()
+dance (Follower id mailbox card) 			= follower id mailbox card
+-- dance (Leader id followers mailbox card) 	= leader id followers mailbox card
 
 -- ==============================================================
 -- startDance
