@@ -68,14 +68,15 @@ follower id (MB mv) card = loop
 	where
 		loop = do
 			-- get message from mailbox
-			(MSG ((Leader id followers (MB l_mv) card), dance)) <- takeMVar mv
+			(MSG ((Leader l_id followers (MB l_mv) card), dance)) <- takeMVar mv
 			-- check contents of message & send message back to leader
 			if (dancedSong card dance) 
-				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
-			else if (dancedWithID card id 0) > 2 
-				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
-			else
-				putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), id))		-- yes
+				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))	-- no
+			else if (dancedWithID card l_id 0) > 2 
+				then putMVar l_mv (MSG ((Follower id (MB mv) card), -1))	-- no
+			else do
+				let marked_card = markCard card dance l_id 
+				putMVar l_mv (MSG ((Follower id (MB mv) marked_card), dance))		-- yes
 			-- followers don't stop for now. so loop
 			-- also still need to mark card, redo loop
 			loop 
