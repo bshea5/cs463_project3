@@ -1,4 +1,5 @@
 import Control.Concurrent
+import System.Random
 
 data DanceCard 	= DC [Int]								deriving (Show)
 data Message 	= MSG (Dancer, Int)
@@ -73,9 +74,10 @@ follower id (MB mv) card = loop
 				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
 			else if (dancedWithID card id 0) > 2 
 				then putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), -1))	-- no
-			else 
+			else
 				putMVar l_mv (MSG ((Leader id followers (MB l_mv) card), id))		-- yes
 			-- followers don't stop for now. so loop
+			-- also still need to mark card, redo loop
 			loop 
 			-- where
 			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
@@ -84,9 +86,26 @@ follower id (MB mv) card = loop
 -- leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> IO ()
 -- might have to do leader with a state?
 
+leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> IO ()
+leaderH id followers (MB mv) card current_dance
+	| current_dance > 8 	= return ()
+	| otherwise 			= do
+		-- pick a dancer
+		index <- randomRIO (0,7)
+		let (Follower f_id (MB f_mv) f_card) = followers !! index
+		-- ask them to dance
+		putMVar f_mv (MSG ((Leader id followers (MB mv) card), current_dance))
+		-- get a response, if yes, mark card and increment current_dance
+		(MSG (dancer, response)) <- takeMVar mv
+		if response == (-1) then leaderH id followers (MB mv) card current_dance -- no
+		else do
+			let markedCard = markCard card current_dance index
+			leaderH id followers (MB mv) markedCard (current_dance+1)			-- yes
+		-- repeat
+
 dance :: Dancer -> IO ()
 dance (Follower id mailbox card) 			= follower id mailbox card
--- dance (Leader id followers mailbox card) 	= leader id followers mailbox card
+dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0
 
 -- ==============================================================
 -- startDance
@@ -112,11 +131,6 @@ dance (Follower id mailbox card) 			= follower id mailbox card
 	--        putStrLn "logger: stop"
 	--        putMVar s ()
 
--- mailing :: Mailbox -> IO ()
--- mailing (MB mv) = loop 
--- where
---	loop = do
---		content <- takeMVar mv
 		
 
 
