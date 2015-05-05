@@ -79,20 +79,15 @@ showCardH (x:xs) s
 -- instance Dancer Leader where
 
 follower :: Int -> Mailbox -> DanceCard -> IO ()
-follower id (MB mv) card = do
-			-- get message from mailbox
-			new_msg <- takeMVar mv
-			print card
-			-- (MSG ((Leader l_id followers (MB l_mv) l_card), dance)) <- takeMVar mv
+follower id (MB mv) card = do			
+			new_msg <- takeMVar mv 	-- get message from mailbox
 			case new_msg of 
 				((MSG ((Leader l_id followers (MB l_mv) l_card), dance))) ->
 					-- check contents of message & send message back to leader
 					if (dancedSong card dance) then do
-						putStrLn "I did this dance."
 						putMVar l_mv (MSG ((Follower id (MB mv) card), (-1)))		-- no
 						follower id (MB mv) card 
 					else if (dancedWithID card (l_id) 0) > 1 then do
-						putStrLn "I've danced with you enough."
 						putMVar l_mv (MSG ((Follower id (MB mv) card), (-1)))		-- no
 						follower id (MB mv) card 
 					else do
@@ -119,8 +114,8 @@ leaderH id followers (MB mv) card current_dance peopleAsked
 		index <- randomRIO (0, ((length followers)-1))
 		-- check if already asked for this dance, than try asking
 		if (peopleAsked!!index) == 1 then do
-			-- putStrLn "already asked"
 			leaderH id followers (MB mv) card current_dance peopleAsked 	-- retry
+		
 		else do
 			let (Follower f_id (MB f_mv) f_card) = followers!!index
 			-- ask them to dance
@@ -129,16 +124,9 @@ leaderH id followers (MB mv) card current_dance peopleAsked
 			(MSG (dancer, response)) <- takeMVar mv
 
 			if response == (-1) then do
-				putStrLn "Denied!"
 				leaderH id followers (MB mv) card current_dance (markIndex peopleAsked index)
 			-- follower said yes, mark card and move on to next dance
 			else do
-				print peopleAsked
-				print  (f_id + 1)
-				putStr " said yes! to: "
-				print (id + 1)
-				putStr " for song: "
-				print current_dance
 				leaderH id followers (MB mv) (markCard card current_dance (index)) (current_dance+1) (reset peopleAsked)
 			-- repeat
 
