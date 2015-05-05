@@ -81,7 +81,7 @@ public class SocratesDance
 		System.out.println(leadersToString());
 		//System.out.println(followersToString());
 
-		System.out.println("The dance is over! ");
+		//System.out.println("The dance is over! ");
 	}
 
 	public void report()
