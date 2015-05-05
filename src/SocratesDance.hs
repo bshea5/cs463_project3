@@ -1,7 +1,8 @@
 import Control.Concurrent.MVar
 
 -- leaders, followers, and dance numbers are all indexed from zero in this
--- program
+-- program. However, they are indexed from one in command line input, and also
+-- in printed output, so adjustments are made for that
 
 -- sets the value at the spot in the list marked by ind (index) to val
 setValue :: [Int] -> Int -> Int -> [Int]
@@ -28,12 +29,23 @@ findInstance list val ans
 reset :: [Int] -> [Int]
 reset list = [x*0 | x <- [1..length list]]
 
+-- DANCE CARD VALS: -2 means it hasn't been handled yet
+--                  -1 means no partners were found
+--                  anything higher than that (including zero) is a follower id
+--
+-- NOTE: Leaders' mailboxes are just MVar Int, followers' mailboxes are MVar [Int]
+--       Leaders just need a yes or no; followers need 
+
+-- returning 1 means yes, 0 means no
+ask :: MVar Int -> Int -> Int
+ask mailbox leaderID = do putMVar 
+
 -- followersAsked must be given as a list of all zeros with length equal to
 -- the number of followers
--- dances must be given as a length 8 list with all values initialized to -2
-leader :: Int -> [MVar Int] -> [Int] -> [Int] -> [Int]
-leader id followers dances followersAsked
-	| not $ elem 0 followersAsked = if ((findInstance dances (-2) 0) /= (-1))
-					then leader id followers (setValue dances (findInstance dances (-2) 0) (-1)) (reset followersAsked)
-					else dances
-	| otherwise = putMVar (followers !! (findInstance followers 0 0)) id
+-- danceCard must be given as a length 8 list with all values initialized to -2
+leader :: Int -> MVar Int -> [(MVar (Int), Int)] -> [Int] -> [Int] -> [Int]
+leader id mailbox followers danceCard followersAsked
+	| not (elem 0 followersAsked) = if ((findInstance danceCard (-2) 0) /= (-1))
+					then leader id mailbox followers (setValue danceCard (findInstance danceCard (-2) 0) (-1)) (reset followersAsked)
+					else setValue danceCard 7 (-1)
+	| otherwise = do putMVar (followers !! (findInstance followers 0 0)) id

@@ -4,7 +4,7 @@ import Control.Concurrent
 import System.Random
 import System.Environment
 
-data DanceCard 	= DC [Int]								deriving (Show)
+data DanceCard 	= DC [Int] deriving (Show)
 data Message 	= MSG (Dancer, Int)
 data Mailbox 	= MB (MVar Message)
 data Dancer 	= Follower Int Mailbox DanceCard | 
@@ -40,9 +40,9 @@ dancedSong (DC card) dance = (card!!dance) /= 0
 
 -- how many times have you danced with someone
 dancedWith :: DanceCard -> Dancer -> Int
-dancedWith dc (Follower id m d) 		= dancedWithID dc id 0
+dancedWith dc (Follower id m d) 	= dancedWithID dc id 0
 dancedWith dc (Leader id followers m d) = dancedWithID dc id 0
-	
+
 dancedWithID :: DanceCard -> Int -> Int -> Int
 dancedWithID (DC card) id count
 	| null card 		= count
@@ -97,7 +97,7 @@ follower id (MB mv) card = loop
 				let marked_card = markCard card dance l_id 
 				putMVar l_mv (MSG ((Follower id (MB mv) marked_card), dance))	-- yes
 			-- followers don't stop for now. so loop
-			loop 
+			loop
 			-- where
 			--	respond_no 	= (MSG ((Leader id followers (MB l_mv) card)), -1)
 			--	respond_yes = (MSG ((Leader id followers (MB l_mv) card)), id)
