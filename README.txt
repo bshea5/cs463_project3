@@ -23,7 +23,15 @@ parameters passed to our functions, was the most helpful part. As far as what
 was laborious, we thought that having to pass references of all the follower
 objects was difficult because we originally did not realize we would have to
 do this and it caused a little refactoring for us.
-	-- skipping third bullet for now
+	While doing the Java implementation, there were a couple interesting
+errors we ran into. The first, and biggest, error we had was the most
+stereotypical error one finds in concurrency - deadlock! An improper planning
+of how to use the mailboxes, and how to perform the message-passing procedure
+properly, left us with a situation where multiple threads just hung, waiting
+on a resource that would never come. This was solved in multiple steps for us,
+with a couple refactorings that made the threads pass messages to each other
+more normally. Finally, we had an issue with the Object class's wait() method,
+because we were mixing up when we should use notify() and notifyAll().
 	When we first started Haskell, we were a little worried what
 concurrency would be like in it, since Haskell is a challenging language for
 us. However, we found that using MVar was actually surprisingly
@@ -33,7 +41,19 @@ on the assignment. The laborious part, to us at least, was still getting used
 to the statelessness of Haskell functions. However, we managed to make it a
 bit more manageable by using data types to organizes some of the required
 values and make function argument lists look a little more sane.
-	-- skipping fifth bullet for now
+	Our errors in Haskell were a little more unique than our errors in
+Java. Our biggest error was a unique error that had to do with us not being
+used to statelessness (our great weakness). We were using an interesting
+strategy where we created a while loop of sorts by describing a "do" (in the
+where block at the end of the function) that called itself repeatedly to
+create a loop. For some reason, we had it in our heads that some of the
+variables we were using in that makeshift loop could remember state from
+iteration to iteration, and that caused us to make assumptions about what the
+program was doing that just weren't true. We also ran into a couple issues
+because in the program, dancers and dances are indexed from one, but in some
+of our loops things were indexed from zero. This caused confusion for us a
+couple of times and in the future we will organize how we notate issues like
+this from the start.
 	To be honest, we don't have any big pieces of advice we wish we could
 have had at the start of the assignment. As usual, there were a fair amount of
 examples in class, and they covered forking multiple threads, using MVar, and
