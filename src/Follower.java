@@ -15,7 +15,6 @@ public class Follower extends Dancer implements Runnable
 		while (!this.isFinished)
 		{
 			Message request = this.mBuff.get(); // get request from own mailbox
-			// why is the request have the wrong dance number?
 
 			// how many times has the follower danced with the requester.
 			// might be faster with an array of timesDanced values for each leader known
