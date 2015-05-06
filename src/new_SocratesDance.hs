@@ -102,19 +102,17 @@ follower id (MB mv) card = do
 			--	respond_yes = (MSG ((Leader id followers (MB l_mv) card)), id)
 			-- send a kill message to followers to stop?
 
--- leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> IO ()
--- might have to do leader with a state?
 
-leaderH :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> [Int] -> IO ()
-leaderH id followers (MB mv) card current_dance peopleAsked
+leader :: Int -> [Dancer] -> Mailbox -> DanceCard -> Int -> [Int] -> IO ()
+leader id followers (MB mv) card current_dance peopleAsked
 	| current_dance > 7 					= putStr $ "Leader " ++ (show (id+1)) ++ ":\n" ++ (showCard card) -- give back card contents
-	| (findInstance peopleAsked 0) == False = leaderH id followers (MB mv) card (current_dance+1) (reset peopleAsked)	-- asked everyone, go to next song
+	| (findInstance peopleAsked 0) == False = leader id followers (MB mv) card (current_dance+1) (reset peopleAsked)	-- asked everyone, go to next song
 	| otherwise 							= do
 		-- pick a dancer
 		index <- randomRIO (0, ((length followers)-1))
 		-- check if already asked for this dance, than try asking
 		if (peopleAsked!!index) == 1 then do
-			leaderH id followers (MB mv) card current_dance peopleAsked 	-- retry
+			leader id followers (MB mv) card current_dance peopleAsked	-- retry
 		
 		else do
 			let (Follower f_id (MB f_mv) f_card) = followers!!index
@@ -124,15 +122,17 @@ leaderH id followers (MB mv) card current_dance peopleAsked
 			(MSG (dancer, response)) <- takeMVar mv
 
 			if response == (-1) then do
-				leaderH id followers (MB mv) card current_dance (markIndex peopleAsked index)
+				leader id followers (MB mv) card current_dance (markIndex peopleAsked index)
 			-- follower said yes, mark card and move on to next dance
 			else do
-				leaderH id followers (MB mv) (markCard card current_dance (index)) (current_dance+1) (reset peopleAsked)
+				leader id followers (MB mv) (markCard card current_dance (index)) (current_dance+1) (reset peopleAsked)
 			-- repeat
+
+-- announcer :: MVar
 
 dance :: Dancer -> IO ()
 dance (Follower id mailbox card) 			= follower id mailbox card
-dance (Leader id followers mailbox card) 	= leaderH id followers mailbox card 0 peopleAsked
+dance (Leader id followers mailbox card) 	= leader id followers mailbox card 0 peopleAsked
 	where peopleAsked = replicate (length followers) (0) 
 
 -- ==============================================================
@@ -149,10 +149,8 @@ main = do
 	argsList <- getArgs
 	let n = (read (argsList !! 0) :: Int)
 	let	m = (read (argsList !! 1) :: Int)
-	-- let n = 1
-	-- let m = 2
 	let	emptyCard = replicate 8 (-1)		-- 8 dances
-	-- emptyMVar 	<- newEmptyMVar
+	-- output 	<- replicateM n newEmptyMVar
 	nMvars	<- replicateM n newEmptyMVar
 	mMvars 	<- replicateM m newEmptyMVar
 
@@ -166,7 +164,7 @@ main = do
 	leadersDancing 	 <- mapM forkIO (map dance leaderList)
 
 	threadDelay $ 1000*3000		-- hopefully enough time to complete
-	putStr "Done.\n"
+	-- putStr "Done.\n"
 
 
 
